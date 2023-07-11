@@ -1,4 +1,4 @@
-x = 100
+x = int(input('Enter number '))
 # x is the variable to match
 match x:
     # if x is 0
