@@ -1,5 +1,7 @@
 print("\u263A")
 print("\U0001F600")
+print("\U0001F63A")
+print("\U0001F601")
 
 name = "Alice"
 age = 30
