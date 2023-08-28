@@ -1,11 +1,9 @@
 from pathlib import Path
 
-
-path = Path('/home/user/Downloads')
+path = Path('C:/Users/User/Downloads')
 
 
 def parse_folder(path):
-
     files = []
     folders = []
     for dir in path.iterdir():
@@ -16,4 +14,6 @@ def parse_folder(path):
 
     return files, folders
 
-print(parse_folder(Path))
+
+print(parse_folder(path)[0])
+print(parse_folder(path)[1])
