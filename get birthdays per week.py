@@ -1,9 +1,11 @@
 from datetime import datetime, date, timedelta
+from collections import defaultdict
 
 
 def get_birthdays_per_week(users):
-    result = {}
+    #    result = {}
     week = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
+    result = defaultdict(list)
 
     today = date.today()
     final_date = today + timedelta(weeks=1)
@@ -16,15 +18,17 @@ def get_birthdays_per_week(users):
             if curent.strftime('%A') in ('Saturday', 'Sunday'):
                 if today.strftime('%A') == 'Monday':
                     continue
-                if 'Monday' in result:
-                    result['Monday'].append(user['name'])
-                else:
-                    result['Monday'] = [(user['name'])]
+                result['Monday'].append(user['name'])
+            #                if 'Monday' in result:
+            #                    result['Monday'].append(user['name'])
+            #                else:
+            #                    result['Monday'] = [(user['name'])]
             else:
-                if curent.strftime('%A') in result:
-                    result[curent.strftime('%A')].append(user['name'])
-                else:
-                    result[curent.strftime('%A')] = [(user['name'])]
+                result[curent.strftime('%A')].append(user['name'])
+    #                if curent.strftime('%A') in result:
+    #                    result[curent.strftime('%A')].append(user['name'])
+    #                else:
+    #                    result[curent.strftime('%A')] = [(user['name'])]
 
     return result
 
