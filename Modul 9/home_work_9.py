@@ -1,16 +1,17 @@
-def hello():
+def hello(*args):
     print('How can I help you?')
 
 
-def add(name, numbers):
-    telephone_numbers_book[name] = numbers
+def add(*args):
+    telephone_numbers_book[args[1]] = args[2]
+    print('Contact added')
 
 
-def change():
+def change(*args):
     pass
 
 
-def phone():
+def phone(*args):
     pass
 
 
@@ -24,7 +25,7 @@ def good_bay(*args):
     return seans
 
 
-def input_error():
+def input_error(*args):
     pass
 
 
@@ -46,12 +47,16 @@ def handler(comand):
 
 
 
-COMANDS = {'hello': hello, 'add': add, 'change': change, 'phone': phone, '.': good_bay, 'show all': show_all}
+COMANDS = {'hello': hello, 'add': add, 'change': change, 'phone': phone, 'good bay': good_bay, 'show all': show_all}
 telephone_numbers_book = {}
 seans = True
 while seans:
     input_user = input()
-    for i in filter(lambda x: )
+
     list_input_user = input_user.split(' ')
-    get_handler = handler(list_input_user[0])
-    get_handler(list_input_user[1], list_input_user[2])
+    if list_input_user[0] in ('good', 'show'):
+        list_input_user[0] = list_input_user[0] + ' ' + list_input_user[1]
+    arguments = tuple(list_input_user)
+
+    get_handler = handler(arguments[0])
+    get_handler(*arguments)
