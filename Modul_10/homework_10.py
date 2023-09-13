@@ -25,7 +25,7 @@ class Phone(Field):
 
 class Record:
     def __init__(self, name):
-        self.name = Name(name)
+        self.name = Name(name)  # застосування асоціації під назваю композиція. Об'єкт Name існує поки є об'єкт Record
         self.phones = []
 
     def add_phone(self, number):
@@ -35,7 +35,6 @@ class Record:
         for p in self.phones:
             if number == p.value:
                 self.phones.remove(number)
-
 
     def edit_phone(self, old_number, new_number):
         for p in self.phones:
@@ -52,7 +51,7 @@ class Record:
 
 
 class AddressBook(UserDict):
-    def add_records(self, user):
+    def add_records(self, user):  # асоціація під назвою агригація
         self.data[user.name.value] = user
 
     def find(self, name):
@@ -60,7 +59,6 @@ class AddressBook(UserDict):
 
     def delete(self, name):
         self.data.pop(name)
-
 
 
 book = AddressBook()
