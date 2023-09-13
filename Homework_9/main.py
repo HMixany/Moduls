@@ -4,11 +4,11 @@ def input_error(func):
         try:
             return func(*args)
         except KeyError:
-            print('Enter user name')
+            return 'Enter user name'
         except ValueError:
-            print('Give me name and phone please')
+            return 'Give me name and phone please'
         except IndexError:
-            print('Give me name and phone please')
+            return 'Give me name and phone please'
 
     return inner
 
@@ -74,7 +74,7 @@ def main():
             print(get_handler(input_user.lower())())
         else:
             list_input = input_user.split()
-            list_input[1] = str.title(list_input[1])
+
             arguments = tuple(list_input)
 
             handler = get_handler(arguments[0].lower())

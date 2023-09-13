@@ -1,3 +1,6 @@
+from functools import reduce
+
+
 def fibonacci(n):
     if n <= 0:
         return 0
@@ -5,6 +8,9 @@ def fibonacci(n):
         return 1
     else:
         return fibonacci(n - 1) + fibonacci(n - 2)
-    
+
+
 num = int(input('Enter number '))
+result = reduce(lambda x, y: x + y, range(num+1))
 print(fibonacci(num))
+print(result)

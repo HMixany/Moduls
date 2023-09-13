@@ -42,4 +42,4 @@ new_list = sorted(my_list)
 print(my_list)
 print(new_list)
 
-from copy import deepcopy
+my_list.remove(3)
