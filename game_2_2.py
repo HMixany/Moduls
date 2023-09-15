@@ -1,4 +1,5 @@
-from random import randint
+from random import randint, choice
+
 
 HEIGHT = 5
 WIDTH = 5
