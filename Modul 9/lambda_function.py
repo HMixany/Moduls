@@ -6,7 +6,7 @@ result = func(3, 5, 7)
 print(result)
 
 
-func_lambda = lambda x, y ,z: x * y * z
+func_lambda = lambda x, y, z: x * y * z
 result_lambda = func_lambda(3, 5, 7)
 print(result_lambda)
 print('-----------------------------------')
