@@ -1,10 +1,10 @@
 class Singleton:
     instance = None
 
-    def __new__(class_, *args, **kwargs):
-        if not isinstance(class_.instance, class_):
-            class_.instance = object.__new__(class_, *args, **kwargs)
-        return class_.instance            #Якщо екземпляр цього класу вже існує, повертаемо цей існуючий екземпляр
+    def __new__(cls, *args, **kwargs):
+        if not isinstance(cls.instance, cls):
+            cls.instance = object.__new__(cls)
+        return cls.instance            #Якщо екземпляр цього класу вже існує, повертаемо цей існуючий екземпляр
 
 
 class A(Singleton):
