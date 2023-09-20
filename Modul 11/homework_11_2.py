@@ -1,31 +1,83 @@
+import re
 from collections import UserDict
+from datetime import datetime, date
 
 
 class Field:
     def __init__(self, value):
+        self._value = None
         self.value = value
 
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+
     def __str__(self):
-        return str(self.value)
+        return str(self._value)
 
 
 class Name(Field):
-    def __init__(self, value):
-        super().__init__(value)
+    @Field.value.setter
+    def value(self, value):
+        if 2 < len(value) < 15:
+            self._value = value
+        else:
+            raise ValueError('Name must be from 3 to 15 characters')
 
 
 class Phone(Field):
-    def __init__(self, value=None):
+
+    @Field.value.setter
+    def value(self, value):
         if value is None:
-            self.value = value
+            self._value = value
         elif len(value) == 10 and value.isdigit():
-            self.value = value
+            self._value = value
         else:
             raise ValueError
 
 
+class Birthday(Field):
+
+    @Field.value.setter
+    def value(self, value: str):
+        if value is None:
+            self._value = value
+        else:
+            date_pattern = r'\d{2}\.\d{2}\.\d{4}'      # Регулярка формату дати "dd.mm.yyyy"
+            if re.match(date_pattern, value):
+                day, month, year = map(int, value.split('.'))
+                # Валідація значень дня, місяця та року
+                if month in [1, 3, 5, 7, 8, 10, 12]:
+                    max_day = 31
+                elif month in [4, 6, 9, 11]:
+                    max_day = 30
+                elif month == 2:
+                    if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+                        max_day = 29                   # Високосний рік
+                    else:
+                        max_day = 28
+                else:
+                    raise ValueError('Wrong month')
+
+                if 1 <= day <= max_day:
+                    self._value = datetime(year, month, day).date()
+                else:
+                    raise ValueError('Incorrect day? month or year values')
+            else:
+                raise ValueError('Incorrect date format')
+
+    def __str__(self):
+        return f"{self._value.strftime('%d.%m.%Y')}"
+
+
 class Record:
-    def __init__(self, name):
+    def __init__(self, name, birthday=None):
+        self.birthday = Birthday(birthday)
         self.name = Name(name)  # застосування асоціації під назваю композиція. Об'єкт Name існує поки є об'єкт Record
         self.phones = []
 
@@ -50,8 +102,27 @@ class Record:
             if phone.value == num:
                 return phone
 
+    def add_birthday(self, birthday):
+        if self.birthday.value is None:
+            self.birthday = Birthday(birthday)
+            return 'added'
+        else:
+            return 'has already'
+
+    def days_to_birthday(self):
+        today = date.today()
+        current_year = today.year
+        if self.birthday.value < today:
+            current_year += 1
+        current_birthday = datetime(current_year, self.birthday.value.month, self.birthday.value.day).date()
+        delta = current_birthday - today
+        return delta.days
+
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        if self.birthday.value is not None:
+            return (f"Name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}, "
+                    f"birthday: {self.birthday}, days to birthday: {self.days_to_birthday()}")
+        return f"Name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 
 class AddressBook(UserDict):
@@ -76,26 +147,4 @@ class AddressBook(UserDict):
             yield page
 
 
-
-'''
-class DictChunkIterator:
-    def __init__(self, dictionary, chunk_size):
-        self.dict = dictionary
-        self.keys = list(dictionary.keys())  # Отримуємо ключи словника
-        self.chunk_size = chunk_size
-        self.current_index = 0
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.current_index >= len(self.keys):
-            raise StopIteration
-        else:
-            start = self.current_index
-            end = self.current_index + self.chunk_size
-            chunk = {k: self.dict[k] for k in self.keys[start:end]}
-            self.current_index = end
-            return chunk
-            '''
 

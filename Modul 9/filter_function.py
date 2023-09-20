@@ -30,3 +30,11 @@ print('{:^25}'.format('То же только с лямбдой:'))
 bad_words = ('bad', 'mad', 'vodka', 'beer')
 for i in filter(lambda j: j not in bad_words, ['apple', 'vodka', 'potato', 'beer']):
     print(i)
+
+generator = filter(lambda i: i % 2, range(10))
+page_number = 3
+page = (item for index, item in enumerate(generator, start=1) if index == page_number)
+result = f'\nPage number {page_number}:\n'
+for i in page:
+    result += str(i)
+print(result)
