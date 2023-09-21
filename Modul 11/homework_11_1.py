@@ -1,3 +1,5 @@
+import pickle
+import json
 from homework_11_2 import *
 
 
@@ -17,6 +19,7 @@ def input_error(func):
     return inner
 
 
+# Декорована функція для формування сторінки с записами
 @input_error
 def compiling_page(page_number, contacts, total):
     result = f'\nPage number {page_number} of {total}\n'
@@ -28,14 +31,14 @@ def compiling_page(page_number, contacts, total):
 # Декорована функція для додавання нового контакту або оновлення існуючого.
 @input_error
 def add(*args):
-    if args[1] in phonebook:                                   # Якщо контакт вже є
+    if args[1] in phonebook.data:                                   # Якщо контакт вже є
         name_record = phonebook.find(args[1])                  # Знайдемо контакт за ім'ям
         if '.' in args[2]:                                     # Якщо третім аргументом елемент дати
             text = name_record.add_birthday(args[2])
             return f'Birthday {text}'                          # Повідомить про додавання дня народження
         else:
-            name_record.add_phone(args[2])                     # Додаємо новий номер, якщо контакт вже існує.
-            return f'Phone {args[2]} has been added to the contact {args[1]}'
+            result = name_record.add_phone(args[2])            # Додаємо новий номер, якщо контакт вже існує.
+            return f'Phone {args[2]} {result} to the contact {args[1]}'
     if len(args) == 4:
         name_record = Record(args[1], args[3])
     else:
@@ -61,8 +64,8 @@ def remove(*args):
     if args[1] not in phonebook:
         raise KeyError
     name_record = phonebook.find(args[1])
-    name_record.remove_phone(args[2])
-    return f'Phone number {args[2]} has been removed'
+    result = name_record.remove_phone(args[2])
+    return result
 
 
 # Декорована функція для отримання номера телефону контакту.
@@ -88,14 +91,14 @@ def show(*args):
 @input_error
 def show_all(*args):
     if not phonebook:
-        raise ValueError('No contacts')
+        raise ValueError('No contacts')                     # Якщо немає контактів
     result = ''
-    chunk_size = 7
+    chunk_size = 7                                          # Кількість контактів на сторінці за замовченням
     user_page = None
-    if len(args) > 1:
+    if len(args) > 1:                                       # Якщо користувач ввів кількість контактів на сторінці
         chunk_size = int(args[1])
-    total_page = ((len(phonebook.data) + chunk_size - 1) // chunk_size)
-    if len(args) == 3:
+    total_page = ((len(phonebook.data) + chunk_size - 1) // chunk_size)     # Кількість сторінок
+    if len(args) == 3:                                      # Якщо користувач ввів номер сторінки
         user_page = int(args[2])
         if user_page > total_page:
             return f'Total pages: {total_page}'
@@ -126,22 +129,51 @@ def get_handler(*args):
     return COMMANDS[command]
 
 
-COMMANDS = {'remove': remove,            # Видаляє номер у контакта
-            'add': add,                  # Додає новий контакт та до існуючого номер або дату народження.
-            'change': change,            # Змінює старий номер на новий
-            'phone': phone,              # Пошук номеру(номерів) телефону контакту за ім'ям
-            'show all': show_all,        # Виводить всі записи
-            'delete': delete,            # Видалення контакту
-            'show': show}                # Виводить всі записи контакту за ім'ям
+COMMANDS = {'remove': remove,           # Видаляє номер у контакта
+            'add': add,                 # Додає новий контакт та до існуючого номер або дату народження.
+            'change': change,           # Змінює старий номер на новий
+            'phone': phone,             # Пошук номеру(номерів) телефону контакту за ім'ям
+            'show all': show_all,       # Виводить всі записи(можно задати к-ть контактів на сторінці,та номер сторінки)
+            'delete': delete,           # Видалення контакту
+            'show': show}               # Виводить всі записи контакту за ім'ям
 
-phonebook = AddressBook()   # Створюємо пустий словник для зберігання контактів (імена-ключі, номери телефону-значення).
+
+try:
+    with open('book.bin', 'rb') as file:
+        phonebook = pickle.load(file)
+#    with open('book.json', 'r') as file:
+#        phonebook.data = json.load(file)
+
+#        with open('book.txt', 'r') as file:
+#            raw_phonebook = file.readlines()
+#            for line in raw_phonebook:
+#                line = line.replace('\n', '')
+#                key, value = line.split('|')
+#                phonebook.data[key] = value
+except FileNotFoundError:
+    print('Book is not. Create new book')
+    phonebook = AddressBook()
+
+
+# Створюємо пустий словник для зберігання контактів (імена-ключі, номери телефону-значення).
 
 
 def main():
+
+    print(phonebook.data)
+    print(type(phonebook.data))
+    print(phonebook)
+    print(type(phonebook))
     while True:
         input_user = input('Write command \t')
         list_input = []
         if input_user.lower() in ('good bay', 'close', 'exit'):
+            with open('book.bin', 'wb') as file:
+                pickle.dump(phonebook, file)
+#            with open('book.json', 'w') as file:
+#                json.dump(phonebook.data, file)
+#                for key, value in phonebook.data.items():
+#                    file.write(f'{key}|{value}\n')
             print('Good bay!')
             break
         elif input_user[:8].lower() == 'show all':
@@ -154,9 +186,10 @@ def main():
             arguments = tuple(list_input)
             handler = get_handler(*arguments)
             if handler not in COMMANDS.values():
-                print('Enter error, try again')
+                print(phonebook.find_match(input_user))
                 continue
             print(handler(*arguments))
+
 
 
 if __name__ == '__main__':

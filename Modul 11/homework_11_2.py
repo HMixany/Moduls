@@ -82,12 +82,18 @@ class Record:
         self.phones = []
 
     def add_phone(self, number):
-        self.phones.append(Phone(number))
+        if number in map(lambda num: num.value, self.phones):
+            return 'has already'                         # Якщо такий номер вже є у контакта
+        else:
+            self.phones.append(Phone(number))
+            return 'has been added'
 
     def remove_phone(self, number):
         for p in self.phones:
             if number == p.value:
                 self.phones.remove(p)
+                return f'Phone number {self.name.value} has been removed'
+        return f'{self.name.value} does not have this number'
 
     def edit_phone(self, old_number, new_number):
         for phone in self.phones:
@@ -146,5 +152,19 @@ class AddressBook(UserDict):
             page = {k: self.data[k] for k in keys[start:end]}
             yield page
 
+    def find_match(self, string):
+        result = ''
+        for record in self.data.values():
+            if string.lower() in record.name.value.lower():
+                result += f'{record}\n'
 
+            for number in record.phones:
+                if string in number.value:
+                    result += f'{record}\n'
+
+            if string in str(record.birthday.value):
+                result += f'{record}\n'
+        if result is None:
+            return 'Nothing found'
+        return result
 
