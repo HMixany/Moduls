@@ -38,7 +38,7 @@ class Phone(Field):
         elif len(value) == 10 and value.isdigit():
             self._value = value
         else:
-            raise ValueError
+            raise ValueError('Number must be 10 characters')
 
 
 class Birthday(Field):
@@ -125,6 +125,12 @@ class Record:
         return delta.days
 
     def __str__(self):
+        if self.birthday.value is not None:
+            return (f"Name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}, "
+                    f"birthday: {self.birthday}, days to birthday: {self.days_to_birthday()}")
+        return f"Name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+
+    def __repr__(self):
         if self.birthday.value is not None:
             return (f"Name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}, "
                     f"birthday: {self.birthday}, days to birthday: {self.days_to_birthday()}")

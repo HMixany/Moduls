@@ -9,8 +9,8 @@ def input_error(func):
             return func(*args, **kwargs)
         except KeyError:
             return 'Enter user name'
-        except ValueError:
-            return 'Give me name and phone please'
+        except ValueError as e:
+            return e
         except IndexError:
             return 'Give me name and phone please'
         except TypeError:
@@ -155,6 +155,7 @@ except FileNotFoundError:
     phonebook = AddressBook()
 
 
+
 # Створюємо пустий словник для зберігання контактів (імена-ключі, номери телефону-значення).
 
 
@@ -170,8 +171,8 @@ def main():
         if input_user.lower() in ('good bay', 'close', 'exit'):
             with open('book.bin', 'wb') as file:
                 pickle.dump(phonebook, file)
-#            with open('book.json', 'w') as file:
-#                json.dump(phonebook.data, file)
+            with open('book.json', 'w') as file:
+                json.dump([phonebook.data], file)
 #                for key, value in phonebook.data.items():
 #                    file.write(f'{key}|{value}\n')
             print('Good bay!')
@@ -179,16 +180,14 @@ def main():
         elif input_user[:8].lower() == 'show all':
             list_input.append(input_user[:8])
             list_input.extend(input_user[8:].split())
-            arguments = tuple(list_input)
-            print(get_handler(*arguments)(*arguments))
+            print(get_handler(*list_input)(*list_input))
         else:
             list_input = input_user.split()
-            arguments = tuple(list_input)
-            handler = get_handler(*arguments)
+            handler = get_handler(*list_input)
             if handler not in COMMANDS.values():
                 print(phonebook.find_match(input_user))
                 continue
-            print(handler(*arguments))
+            print(handler(*list_input))
 
 
 
