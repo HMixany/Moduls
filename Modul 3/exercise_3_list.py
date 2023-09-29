@@ -37,6 +37,9 @@ numbers.sort()
 print(numbers)
 chars.reverse()
 print(chars)
+chars = ["a", "b"]
+chars.insert(1, "c")
+print(chars)  # ['a', 'c', 'b']
 my_list = [5,7,1,9,2,4]
 new_list = sorted(my_list)
 print(my_list)

@@ -49,7 +49,7 @@ def show_all(*args):
     for l in iterator:
         result = ''
         for name, record in l.items():
-            result += f'{record}\n'
+            result += f'{record = }\n'
         print(result)
         input('Press enter to continue ')
     return f'No more contacts'

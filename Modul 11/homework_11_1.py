@@ -156,6 +156,7 @@ except FileNotFoundError:
 
 
 
+
 # Створюємо пустий словник для зберігання контактів (імена-ключі, номери телефону-значення).
 
 
@@ -171,8 +172,8 @@ def main():
         if input_user.lower() in ('good bay', 'close', 'exit'):
             with open('book.bin', 'wb') as file:
                 pickle.dump(phonebook, file)
-            with open('book.json', 'w') as file:
-                json.dump([phonebook.data], file)
+#            with open('book.json', 'w') as file:
+#                json.dump([phonebook.data], file)
 #                for key, value in phonebook.data.items():
 #                    file.write(f'{key}|{value}\n')
             print('Good bay!')
@@ -188,7 +189,6 @@ def main():
                 print(phonebook.find_match(input_user))
                 continue
             print(handler(*list_input))
-
 
 
 if __name__ == '__main__':
