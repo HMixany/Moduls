@@ -103,3 +103,4 @@ print(numbers)
 s = 'blue socks and red shoes'
 p = re.sub(r'(blue|white|red)', 'colour', s)
 print(p)
+print(p)
